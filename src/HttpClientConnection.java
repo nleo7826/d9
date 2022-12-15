@@ -68,5 +68,6 @@ public class HttpClientConnection {
             }
         }
         bw.flush();
+        os.close();
     }
 }

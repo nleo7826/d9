@@ -38,24 +38,23 @@ public class HttpServer {
             }
         }
         
-        try {
-
             
-            ServerSocket server = new ServerSocket(port);
-            System.out.println("Listening on port " + port + "\ndocRoot: " + docRoot + "\nfileName: " + fileName);
+            try (ServerSocket server = new ServerSocket(port)) {
+                System.out.println("Listening on port " + port + "\ndocRoot: " + docRoot + "\nfileName: " + fileName);
 
-            try {
-                File file = new File(docRoot.toString());
-                file.createNewFile();
+                try {
+                    File file = new File(docRoot.toString());
+                    file.createNewFile();
+                } catch (IOException e) {
+                    System.exit(1);
+                }
+      
+                while(true) {
+                    Socket sc = server.accept();
+                    HttpClientConnection.readWrite(sc, docRoot);
+                    sc.close();
+                }
             } catch (IOException e) {
-                System.exit(1);
-            }
-        
-
-            Socket sc = server.accept();
-            HttpClientConnection.readWrite(sc, docRoot);
-
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }
